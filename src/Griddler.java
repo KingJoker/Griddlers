@@ -81,11 +81,14 @@ public class Griddler {
 
     }
 
+
+
     public Cell[] clone (Cell[] row){
         Cell[] clone = new Cell[row.length];
         for (int i = 0; i < row.length; i++) {
             clone[i] = row[i].clone();
         }
+        return clone;
     }
     public Cell[] row(int index) {
         return grid[index];
@@ -96,6 +99,54 @@ public class Griddler {
             col[i] = grid[i][index];
         }
         return col;
+    }
+
+    private boolean isLineSolved(int[] line, ArrayList<Integer> num){
+        int lineIndex = 0;
+        int numIndex = 0;
+        boolean solved = true;
+        while (numIndex < num.size()) {
+            while((line[lineIndex]== Cell.FULL) && num.get(numIndex)>0){
+                lineIndex++;
+                num.set(numIndex,num.get(numIndex)-1);
+            }
+            if(line[lineIndex] != Cell.FULL) {
+                numIndex++;
+            }
+            if(numIndex > num.size()){
+                solved = true;
+            }
+
+            while((line[lineIndex] == Cell.EMPTY) || (line[lineIndex] == Cell.UNKNOWN)){
+                lineIndex ++
+                if(lineIndex>line.length) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    private boolean isRowSolved(int row){
+        return isLineSolved(row(row),rowNums[row]);
+    }
+
+    private boolean isColSoved(int col){
+        return isLineSolved(col(col),colNums[col]);
+    }
+
+    public boolean isSolved(){
+        boolean solved = true;
+
+        for (int r = 0; r < grid.length && solved; r++) {
+            solved &= isRowSolved(r);
+        }
+
+        for (int c = 0; c < grid[0].length && solved; c++) {
+            solved &= isColSoved(c);
+        }
+
+        return solved;
     }
 
     public String toString(){
