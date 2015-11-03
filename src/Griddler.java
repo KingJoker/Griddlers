@@ -90,10 +90,10 @@ public class Griddler {
         }
         return clone;
     }
-    public Cell[] row(int index) {
+    public Cell[] getRow(int index) {
         return grid[index];
     }
-    public Cell[] col(int index){
+    public Cell[] getCol(int index){
         Cell[] col = new Cell[grid.length];
         for (int i = 0; i < grid.length; i++) {
             col[i] = grid[i][index];
@@ -101,24 +101,24 @@ public class Griddler {
         return col;
     }
 
-    private boolean isLineSolved(int[] line, ArrayList<Integer> num){
+    private boolean isLineSolved(Cell[] line, ArrayList<Integer> num){
         int lineIndex = 0;
         int numIndex = 0;
         boolean solved = true;
         while (numIndex < num.size()) {
-            while((line[lineIndex]== Cell.FULL) && num.get(numIndex)>0){
+            while((line[lineIndex].equals(Cell.FULL)) && num.get(numIndex)>0){
                 lineIndex++;
                 num.set(numIndex,num.get(numIndex)-1);
             }
-            if(line[lineIndex] != Cell.FULL) {
+            if(!line[lineIndex].equals(Cell.FULL)) {
                 numIndex++;
             }
             if(numIndex > num.size()){
                 solved = true;
             }
 
-            while((line[lineIndex] == Cell.EMPTY) || (line[lineIndex] == Cell.UNKNOWN)){
-                lineIndex ++
+            while((line[lineIndex].equals(Cell.EMPTY)) || (line[lineIndex].equals(Cell.UNKNOWN))){
+                lineIndex ++;
                 if(lineIndex>line.length) {
                     return false;
                 }
@@ -127,12 +127,49 @@ public class Griddler {
         return false;
     }
 
+    public ArrayList<Cell[]> permutate(Cell[] line, ArrayList<Byte> nums){
+        ArrayList<Cell[]> permutations = new ArrayList<>();
+        int numLength = nums.size()-1;
+        byte[] numsArray = new byte[nums.size()];
+        for (int i = 0; i < nums.size(); i++) {
+            currentNums[i] = nums.get(i);
+        }
+        for (Byte num : nums) {
+            numLength+= num;
+        }
+
+        Cell[] newLine = new Cell[line.length];
+        int numIndex = 0;
+        int lineIndex = 0;
+        byte[] currentNums = numsArray.clone();
+        while(lineIndex){
+            if(line[lineIndex].equals(Cell.EMPTY)){
+                lineIndex++;
+                continue;
+            }
+            if(numIndex >= currentNums.length){
+                while(lineIndex < newLine.length) {
+                    newLine[lineIndex++] = new Cell(Cell.EMPTY);
+                }
+                break;
+            }
+            int emptySpaces = 0;
+            int emptyIndex = lineIndex;
+            while(emptyIndex < newLine.length){
+
+            }
+        }
+        permutations.add(newLine);
+
+        return permutations;
+    }
+
     private boolean isRowSolved(int row){
-        return isLineSolved(row(row),rowNums[row]);
+        return isLineSolved(getRow(row),rowNums[row]);
     }
 
     private boolean isColSoved(int col){
-        return isLineSolved(col(col),colNums[col]);
+        return isLineSolved(getCol(col),colNums[col]);
     }
 
     public boolean isSolved(){
@@ -185,6 +222,15 @@ public class Griddler {
 
         public Cell clone(){
             return new Cell(status);
+        }
+
+        public boolean equals(byte type){
+            return status == type;
+        }
+
+        public boolean equals(Object o){
+            Cell other = (Cell) o;
+            return status == other.status;
         }
 
         public String toString(){
