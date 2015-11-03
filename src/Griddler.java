@@ -156,7 +156,7 @@ public class Griddler {
             int emptySpaces = 0;
             int emptyIndex = lineIndex;
             while(emptyIndex < newLine.length){
-
+                //current working location
             }
         }
         permutations.add(newLine);
